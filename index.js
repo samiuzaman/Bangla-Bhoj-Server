@@ -27,7 +27,13 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
 
-    
+    const AllMenuCollection = client.db("Bangla_Bhoj").collection("Menu");
+
+    // Bangla Bhoj Menu Items
+    app.get("/menus", async (req, res) => {
+      const menu = await AllMenuCollection.find().toArray();
+      res.send(menu);
+    });
 
     // Send a ping to confirm a successful connection
     // await client.db("admin").command({ ping: 1 });
