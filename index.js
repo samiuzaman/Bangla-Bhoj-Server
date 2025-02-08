@@ -28,11 +28,34 @@ async function run() {
     // await client.connect();
 
     const AllMenuCollection = client.db("Bangla_Bhoj").collection("Menu");
+    const AllCategoryCollection = client
+      .db("Bangla_Bhoj")
+      .collection("Category");
 
     // Bangla Bhoj Menu Items
     app.get("/menus", async (req, res) => {
       const menu = await AllMenuCollection.find().toArray();
       res.send(menu);
+    });
+    app.get("/special-menu", async (req, res) => {
+      const menu = await AllMenuCollection.find()
+        .sort({ orderCount: -1 })
+        .limit(3)
+        .toArray();
+      res.send(menu);
+    });
+
+    app.get("/item/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: new ObjectId(id) };
+      const item = await AllMenuCollection.findOne(query);
+      res.send(item);
+    });
+
+    // Bangla Bhoj Category
+    app.get("/category", async (req, res) => {
+      const category = await AllCategoryCollection.find().toArray();
+      res.send(category);
     });
 
     // Send a ping to confirm a successful connection
