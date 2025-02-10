@@ -25,7 +25,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    // await client.connect();
+    await client.connect();
 
     const AllMenuCollection = client.db("Bangla_Bhoj").collection("Menu");
     const AllCategoryCollection = client
@@ -34,13 +34,24 @@ async function run() {
 
     // Bangla Bhoj Menu Items
     app.get("/menus", async (req, res) => {
-      const menu = await AllMenuCollection.find().toArray();
+      const category = req.query.category;
+      const { search } = req.query;
+      let query = {};
+      if (category === "All-Item") {
+        query = {};
+      } else if (category) {
+        query = { category: category };
+      }
+      if (search) {
+        query = { name: { $regex: search, $options: "i" } };
+      }
+      const menu = await AllMenuCollection.find(query).toArray();
       res.send(menu);
     });
     app.get("/special-menu", async (req, res) => {
       const menu = await AllMenuCollection.find()
         .sort({ orderCount: -1 })
-        .limit(3)
+        .limit(4)
         .toArray();
       res.send(menu);
     });
