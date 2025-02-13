@@ -25,12 +25,14 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
     const AllMenuCollection = client.db("Bangla_Bhoj").collection("Menu");
     const AllCategoryCollection = client
       .db("Bangla_Bhoj")
       .collection("Category");
+    const ServiceCollection = client.db("Bangla_Bhoj").collection("Service");
+    const MemberCollection = client.db("Bangla_Bhoj").collection("Member");
 
     // Bangla Bhoj Menu Items
     app.get("/menus", async (req, res) => {
@@ -67,6 +69,14 @@ async function run() {
     app.get("/category", async (req, res) => {
       const category = await AllCategoryCollection.find().toArray();
       res.send(category);
+    });
+    app.get("/services", async (req, res) => {
+      const services = await ServiceCollection.find().toArray();
+      res.send(services);
+    });
+    app.get("/members", async (req, res) => {
+      const members = await MemberCollection.find().toArray();
+      res.send(members);
     });
 
     // Send a ping to confirm a successful connection
